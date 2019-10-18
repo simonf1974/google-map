@@ -17,6 +17,9 @@ export const getStopAndSearch = async (lat: number, long: number, date: string):
   return await response.json();
 };
 
+let glat: number = 51.6222752;
+let glong: number = -0.2787604;
+
 const addSasMarkers = (lat: number, long: number, date: string) => {
   getStopAndSearch(lat, long, date).then(data => {
     const loc = { lat: lat, lng: long };
@@ -43,9 +46,32 @@ const addSasMarkers = (lat: number, long: number, date: string) => {
       });
     });
     google.maps.event.addListener(map, "click", function(event) {
-      addSasMarkers(event.latLng.lat(), event.latLng.lng(), "2019-01");
+      glat = event.latLng.lat();
+      glong = event.latLng.lng();
+      addSasMarkers(glat, glong, "2019-01");
     });
   });
 };
 
-addSasMarkers(51.6222752, -0.2787604, "2018-06");
+$(document).ready(function() {
+  $("#date").attr("value", "2019-01");
+  $("#date").attr("min", "2017-01");
+
+  addSasMarkers(
+    glat,
+    glong,
+    $("#date")
+      .val()
+      .toString()
+  );
+});
+
+$("#date").change(function() {
+  addSasMarkers(
+    glat,
+    glong,
+    $("#date")
+      .val()
+      .toString()
+  );
+});
